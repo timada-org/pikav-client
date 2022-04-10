@@ -1,0 +1,15 @@
+name: "Ci main"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  node-ci-main:
+    uses: timada-org/.github/.github/workflows/node-ci-main.yml@v1.1.0
+    with:
+      filters: --filter client --filter solid-js
+    secrets:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
