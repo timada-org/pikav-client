@@ -35,7 +35,7 @@
     "postversion": "cp -r package.json ..",
     "lint": "eslint '{packages,apps}/*/src/**/*.{js,ts,tsx}' --max-warnings=0 --no-ignore",
     "lint:fix": "pnpm lint -- --fix",
-    "prepare": "node ./scripts/prepare.js"
+    "prepare": "is-ci || husky install"
   },
   "lint-staged": {
     "{packages,apps}/*/src/**/*.{js,ts,tsx}": [
@@ -65,6 +65,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-solid": "^0.4.6",
     "husky": "^7.0.4",
+    "is-ci": "^3.0.1",
     "lint-staged": "^12.3.7",
     "prettier": "^2.6.2",
     "semantic-release": "^19.0.2",
