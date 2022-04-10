@@ -35,7 +35,7 @@
     "postversion": "cp -r package.json ..",
     "lint": "eslint '{packages,apps}/*/src/**/*.{js,ts,tsx}' --max-warnings=0 --no-ignore",
     "lint:fix": "pnpm lint -- --fix",
-    "prepare": "husky install"
+    "prepare": "node ./scripts/prepare.js"
   },
   "lint-staged": {
     "{packages,apps}/*/src/**/*.{js,ts,tsx}": [
