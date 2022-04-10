@@ -1,6 +1,6 @@
 {
   "name": "pikav",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A collection of libraries and tools that help you build adaptive, accessible, and robust user experiences.",
   "files": [
     "dist"
