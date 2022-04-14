@@ -1,7 +1,0 @@
-name: "Ci pull request"
-
-on: pull_request
-
-jobs:
-  node-ci-pull-request:
-    uses: timada-org/.github/.github/workflows/node-ci-pull-request.yml@v1.1.0
