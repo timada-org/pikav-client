@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  node-ci-main:
+  node:
     uses: timada-org/.github/.github/workflows/node-release.yml@v1.1.1
     with:
       filters: --filter client --filter solid-js

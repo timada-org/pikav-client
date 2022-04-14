@@ -3,11 +3,11 @@ name: "Audit"
 on:
   schedule:
     - cron: 0 9 * * 1
-  push:
+  pull_request:
     paths:
       - '**/package.json'
       - '**/pnpm-lock.yaml'
 
 jobs:
-  node-ci-main:
+  node:
     uses: timada-org/.github/.github/workflows/node-audit.yml@v1.1.1

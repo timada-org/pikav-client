@@ -3,5 +3,5 @@ name: "Testing"
 on: pull_request
 
 jobs:
-  node-ci-pull-request:
+  node:
     uses: timada-org/.github/.github/workflows/node-testing.yml@v1.1.1
