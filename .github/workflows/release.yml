@@ -1,4 +1,4 @@
-name: "Ci main"
+name: "Release"
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   node-ci-main:
-    uses: timada-org/.github/.github/workflows/node-ci-main.yml@v1.1.0
+    uses: timada-org/.github/.github/workflows/node-release.yml@v1.1.1
     with:
       filters: --filter client --filter solid-js
     secrets:
