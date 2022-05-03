@@ -10,5 +10,5 @@ plugins:
     assets:
       - "package.json"
       - "package-lock.json"
-      - "apps/**/package.json"
-      - "packages/**/package.json"
+      - "apps/*/package.json"
+      - "packages/*/package.json"
