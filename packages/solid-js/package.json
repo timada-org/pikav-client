@@ -1,14 +1,13 @@
 {
-  "name": "solid-js",
+  "name": "pikav-solid-js",
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "build": "rollup -c && rm -rf ../../dist/solid-js && mkdir -p ../../dist && mv dist ../../dist/solid-js"
+    "build": "rollup -c && rm -rf ../pikav-client-js/dist/solid-js && mkdir -p ../pikav-client-js/dist && mv dist ../pikav-client-js/dist/solid-js"
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "pikav": "workspace:^",
-    "client": "workspace:^",
+    "pikav": "0.0.2",
     "rollup": "^2.70.1",
     "rollup-preset-solid": "^1.4.0",
     "solid-js": "^1.3.14",

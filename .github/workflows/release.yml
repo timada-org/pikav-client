@@ -7,9 +7,7 @@ on:
 
 jobs:
   node:
-    uses: timada-org/.github/.github/workflows/node-release.yml@v1.1.1
-    with:
-      filters: --filter client --filter solid-js
+    uses: timada-org/.github/.github/workflows/node-release.yml@v2.0.3
     secrets:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
