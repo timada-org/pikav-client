@@ -6,8 +6,8 @@ on:
   pull_request:
     paths:
       - '**/package.json'
-      - '**/pnpm-lock.yaml'
+      - '**/package-lock.json'
 
 jobs:
   node:
-    uses: timada-org/.github/.github/workflows/node-audit.yml@v1.1.1
+    uses: timada-org/.github/.github/workflows/node-audit.yml@v2.0.3

@@ -1,40 +1,16 @@
 {
-  "name": "pikav",
-  "version": "0.0.2",
-  "description": "A collection of libraries and tools that help you build adaptive, accessible, and robust user experiences.",
-  "files": [
-    "dist"
+  "name": "root",
+  "version": "0.0.0",
+  "private":true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
   ],
-  "main": "dist/client/esm/index.js",
-  "module": "dist/client/esm/index.js",
-  "types": "dist/client/types/index.d.ts",
-  "exports": {
-    "./solid-js": {
-      "solid": "./dist/solid-js/source/index.jsx",
-      "import": "./dist/solid-js/esm/index.js",
-      "browser": "./dist/solid-js/esm/index.js",
-      "require": "./dist/solid-js/esm/index.js",
-      "node": "./dist/solid-js/esm/index.js"
-    },
-    ".": {
-      "solid": "./dist/client/source/index.jsx",
-      "import": "./dist/client/esm/index.js",
-      "browser": "./dist/client/esm/index.js",
-      "require": "./dist/client/esm/index.js",
-      "node": "./dist/client/esm/index.js"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "solid-js": [
-        "dist/solid-js/types/index.d.ts"
-      ]
-    }
-  },
   "scripts": {
-    "postversion": "cp -r package.json ..",
+    "build": "npm run build -w client -w pikav-solid-js",
     "lint": "eslint '{packages,apps}/*/src/**/*.{js,ts,tsx}' --max-warnings=0 --no-ignore",
-    "lint:fix": "pnpm lint -- --fix",
+    "lint:fix": "npm run lint -- --fix",
+    "pre-commit": "lint-staged",
     "prepare": "is-ci || husky install"
   },
   "lint-staged": {
