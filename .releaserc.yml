@@ -4,7 +4,7 @@ plugins:
   - "@semantic-release/commit-analyzer"
   - "@semantic-release/release-notes-generator"
   - path: "@semantic-release/npm"
-    pkgRoot: "build"
+    pkgRoot: "packages/pikav-client-js"
   - path: "@semantic-release/github"
   - path: "@semantic-release/git"
     assets:
