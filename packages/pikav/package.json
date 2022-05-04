@@ -31,9 +31,6 @@
       ]
     }
   },
-  "scripts": {
-    "postpublish": "npm update pikav -w demo -w solid"
-  },
   "peerDependencies": {
     "solid-js": "^1.3.14"
   },
