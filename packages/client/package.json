@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "build": "rollup -c && rm -rf ../pikav-client-js/dist/client && mkdir -p ../pikav-client-js/dist && mv dist ../pikav-client-js/dist/client"
+    "build": "rollup -c && rm -rf ../pikav/dist/client && mkdir -p ../pikav/dist && mv dist ../pikav/dist/client"
   },
   "license": "Apache-2.0",
   "devDependencies": {

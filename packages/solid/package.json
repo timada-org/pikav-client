@@ -3,11 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "build": "rollup -c && rm -rf ../pikav-client-js/dist/solid && mkdir -p ../pikav-client-js/dist && mv dist ../pikav-client-js/dist/solid"
+    "build": "rollup -c && rm -rf ../pikav/dist/solid && mkdir -p ../pikav/dist && mv dist ../pikav/dist/solid"
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "pikav": "file:../pikav-client-js",
+    "pikav": "file:../pikav",
     "rollup": "^2.70.1",
     "rollup-preset-solid": "^1.4.0",
     "solid-js": "^1.3.14",
