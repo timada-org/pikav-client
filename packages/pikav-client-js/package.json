@@ -9,12 +9,12 @@
   "module": "dist/client/esm/index.js",
   "types": "dist/client/types/index.d.ts",
   "exports": {
-    "./solid-js": {
-      "solid": "./dist/solid-js/source/index.jsx",
-      "import": "./dist/solid-js/esm/index.js",
-      "browser": "./dist/solid-js/esm/index.js",
-      "require": "./dist/solid-js/esm/index.js",
-      "node": "./dist/solid-js/esm/index.js"
+    "./solid": {
+      "solid": "./dist/solid/source/index.jsx",
+      "import": "./dist/solid/esm/index.js",
+      "browser": "./dist/solid/esm/index.js",
+      "require": "./dist/solid/esm/index.js",
+      "node": "./dist/solid/esm/index.js"
     },
     ".": {
       "solid": "./dist/client/source/index.jsx",
@@ -26,13 +26,13 @@
   },
   "typesVersions": {
     "*": {
-      "solid-js": [
-        "dist/solid-js/types/index.d.ts"
+      "solid": [
+        "dist/solid/types/index.d.ts"
       ]
     }
   },
   "scripts": {
-    "postpublish": "npm update mwaka -w demo -w pikav-solid-js"
+    "postpublish": "npm update mwaka -w demo -w solid"
   },
   "peerDependencies": {
     "solid-js": "^1.3.14"

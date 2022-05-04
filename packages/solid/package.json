@@ -1,9 +1,9 @@
 {
-  "name": "pikav-solid-js",
+  "name": "solid",
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "build": "rollup -c && rm -rf ../pikav-client-js/dist/solid-js && mkdir -p ../pikav-client-js/dist && mv dist ../pikav-client-js/dist/solid-js"
+    "build": "rollup -c && rm -rf ../pikav-client-js/dist/solid && mkdir -p ../pikav-client-js/dist && mv dist ../pikav-client-js/dist/solid"
   },
   "license": "Apache-2.0",
   "devDependencies": {

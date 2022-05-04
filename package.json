@@ -7,7 +7,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build -w client -w pikav-solid-js",
+    "build": "npm run build -w client -w solid",
     "lint": "eslint '{packages,apps}/*/src/**/*.{js,ts,tsx}' --max-warnings=0 --no-ignore",
     "lint:fix": "npm run lint -- --fix",
     "pre-commit": "lint-staged",
