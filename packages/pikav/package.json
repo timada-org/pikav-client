@@ -17,7 +17,6 @@
       "node": "./dist/solid/esm/index.js"
     },
     ".": {
-      "solid": "./dist/client/source/index.jsx",
       "import": "./dist/client/esm/index.js",
       "browser": "./dist/client/esm/index.js",
       "require": "./dist/client/esm/index.js",
