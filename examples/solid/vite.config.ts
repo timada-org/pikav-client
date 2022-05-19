@@ -18,8 +18,9 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.substring(4),
       },
-      "/sessions/whoami": {
+      "/kratos": {
         target: "http://127.0.0.1:4433",
+        rewrite: (path) => path.substring(7),
         changeOrigin: true,
       },
     },

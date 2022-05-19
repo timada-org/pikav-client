@@ -1,5 +1,5 @@
 import { Component, createResource, createSignal, For } from "solid-js";
-import { Client } from "pikav";
+import { useSubscribe } from "pikav/solid";
 
 interface Todo {
   id: number;
@@ -13,9 +13,7 @@ const App: Component = () => {
   const [inputValue, setInputValue] = createSignal("");
   const [todos, { mutate }] = createResource<Todo[]>(fetchTodos, { initialValue: [] });
 
-  const client = new Client({ url: "http://127.0.0.1:6750/sse", api: "/pikav" });
-
-  client.subscribe("todos/+", (event) => {
+  useSubscribe<Todo>("todos/+", (event) => {
     switch (event.name) {
       case "Created":
         mutate((todos) => [...todos, event.data]);
@@ -39,44 +37,6 @@ const App: Component = () => {
         break;
     }
   });
-
-  // const es = new EventSource("http://127.0.0.1:6750/sse");
-  // es.onmessage = (ev) => {
-  //   const data = JSON.parse(ev.data);
-  //   if (data.topic === "$SYS/session" && data.name === "Created") {
-  //     fetch("/pikav/subscribe/todos/+", {
-  //       method: "PUT",
-  //       headers: new Headers({
-  //         "X-Pikav-Session-ID": data.data,
-  //       }),
-  //     });
-
-  //     return;
-  //   }
-
-  //   switch (data.name) {
-  //     case "Created":
-  //       mutate((todos) => [...todos, data.data]);
-  //       break;
-
-  //     case "Updated":
-  //       mutate((todos) => {
-  //         const i = todos.findIndex((todo) => todo.id == data.data.id);
-
-  //         return [...todos.slice(0, i), Object.assign({}, data.data), ...todos.slice(i + 1)];
-  //       });
-  //       break;
-
-  //     case "Deleted":
-  //       mutate((todos) => {
-  //         return todos.filter((t) => t.id !== data.data.id);
-  //       });
-  //       break;
-
-  //     default:
-  //       break;
-  //   }
-  // };
 
   return (
     <>
