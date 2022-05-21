@@ -1,5 +1,7 @@
-import { Component, createResource, createSignal, For } from "solid-js";
+import { Component, createResource, For, JSX } from "solid-js";
 import { useSubscribe } from "pikav/solid";
+
+import "./App.css";
 
 interface Todo {
   id: number;
@@ -7,29 +9,45 @@ interface Todo {
   done: boolean;
 }
 
-const fetchTodos = async () => (await fetch(`/api/todos`)).json();
+interface TodoItem {
+  data: Todo;
+  disabled: boolean;
+}
+
+const fetchTodos = async () => {
+  const resp = await fetch(`/api/todos`);
+  const data: Todo[] = await resp.json();
+
+  return data.map((todo) => ({ data: todo, disabled: false }));
+};
 
 const App: Component = () => {
-  const [inputValue, setInputValue] = createSignal("");
-  const [todos, { mutate }] = createResource<Todo[]>(fetchTodos, { initialValue: [] });
+  const [todos, { mutate }] = createResource<TodoItem[]>(fetchTodos, { initialValue: [] });
 
   useSubscribe<Todo>("todos/+", (event) => {
     switch (event.name) {
       case "Created":
-        mutate((todos) => [...todos, event.data]);
+        mutate((todos) => {
+          const i = todos.findIndex(
+            (todo) => todo.data.id === -1 && todo.data.text == event.data.text,
+          );
+          return [
+            ...todos.slice(0, i),
+            Object.assign({ data: event.data, disabled: false }),
+            ...todos.slice(i + 1),
+          ];
+        });
         break;
 
       case "Updated":
         mutate((todos) => {
-          const i = todos.findIndex((todo) => todo.id == event.data.id);
+          const i = todos.findIndex((todo) => todo.data.id == event.data.id);
 
-          return [...todos.slice(0, i), Object.assign({}, event.data), ...todos.slice(i + 1)];
-        });
-        break;
-
-      case "Deleted":
-        mutate((todos) => {
-          return todos.filter((t) => t.id !== event.data.id);
+          return [
+            ...todos.slice(0, i),
+            { data: event.data, disabled: false },
+            ...todos.slice(i + 1),
+          ];
         });
         break;
 
@@ -38,52 +56,121 @@ const App: Component = () => {
     }
   });
 
-  return (
-    <>
-      <input
-        type="text"
-        value={inputValue()}
-        onChange={(e) => setInputValue(e.currentTarget.value)}
-        onKeyUp={(e) => {
-          if (e.key === "Enter") {
-            fetch("/api/todos", {
-              method: "POST",
-              body: JSON.stringify({ text: inputValue() }),
-              headers: new Headers({ "Content-Type": "application/json" }),
-            });
-          }
-        }}
-      />
+  const onTodoChange = (todo: Todo, i: number) => {
+    mutate((todos) => {
+      return [
+        ...todos.slice(0, i),
+        Object.assign({ data: todo, disabled: true }),
+        ...todos.slice(i + 1),
+      ];
+    });
 
-      <ul>
-        <For each={todos()}>
-          {(todo) => (
-            <li>
-              {todo.text} {todo.done ? "yes" : "no"}
-              <button
-                onclick={() => {
-                  fetch(`/api/todos/${todo.id}`, {
-                    method: "PUT",
-                    body: JSON.stringify({ text: inputValue(), done: !todo.done }),
-                  });
-                }}
-              >
-                Update
-              </button>
-              <button
-                onclick={() => {
-                  fetch(`/api/todos/${todo.id}`, {
-                    method: "DELETE",
-                  });
-                }}
-              >
-                Delete
-              </button>
-            </li>
-          )}
-        </For>
-      </ul>
-    </>
+    if (todo.text === "") {
+      if (todo.id > -1) {
+        fetch(`/api/todos/${todo.id}`, {
+          method: "DELETE",
+        });
+      }
+
+      mutate((todos) => {
+        const newValues = [...todos];
+        newValues.splice(i, 1);
+
+        return newValues;
+      });
+
+      return;
+    }
+
+    if (todo.id > -1) {
+      fetch(`/api/todos/${todo.id}`, {
+        method: "PUT",
+        body: JSON.stringify({ text: todo.text, done: todo.done }),
+      });
+
+      return;
+    }
+
+    fetch("/api/todos", {
+      method: "POST",
+      body: JSON.stringify({ text: todo.text }),
+      headers: new Headers({ "Content-Type": "application/json" }),
+    });
+  };
+
+  const onTodoAdd = () => {
+    mutate((todos) => [...todos, { data: { id: -1, text: "", done: false }, disabled: false }]);
+  };
+
+  return (
+    <div class="app">
+      <div class="app__container">
+        <ul class="app__todos">
+          <For each={todos()}>
+            {(item, i) => (
+              <Todo
+                todo={item.data}
+                disabled={item.disabled}
+                onChange={(todo) => onTodoChange(todo, i())}
+              />
+            )}
+          </For>
+          <button class="app__add-btn" onclick={onTodoAdd}>
+            +
+          </button>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+interface TodoProps {
+  todo: Todo;
+  onChange: (todo: Todo) => void;
+  disabled: boolean;
+}
+
+const Todo: Component<TodoProps> = (props) => {
+  const onInputChange: JSX.EventHandlerUnion<HTMLInputElement, Event> = (e) => {
+    if (props.disabled) {
+      return;
+    }
+
+    if (props.todo.id === -1 || e.currentTarget.value !== props.todo.text) {
+      props.onChange({ ...props.todo, text: e.currentTarget.value });
+    }
+  };
+
+  const onInputBlur: JSX.EventHandlerUnion<HTMLInputElement, Event> = (e) => {
+    if (props.disabled) {
+      return;
+    }
+
+    if (props.todo.id === -1 && e.currentTarget.value === props.todo.text) {
+      props.onChange({ ...props.todo, text: e.currentTarget.value });
+    }
+  };
+
+  const onButtonClick: JSX.EventHandlerUnion<HTMLButtonElement, Event> = () => {
+    if (!props.disabled && props.todo.id > -1) {
+      props.onChange({ ...props.todo, done: !props.todo.done });
+    }
+  };
+
+  return (
+    <li class="todo" classList={{ todo_done: props.todo.done, todo_disabled: props.disabled }}>
+      <div class="todo__input">
+        <input
+          type="text"
+          value={props.todo.text}
+          onchange={onInputChange}
+          onblur={onInputBlur}
+          readonly={props.disabled}
+          placeholder="enter your text here"
+        />
+      </div>
+      <button class="todo__done-btn" disabled={props.disabled} onClick={onButtonClick}></button>
+    </li>
   );
 };
 
