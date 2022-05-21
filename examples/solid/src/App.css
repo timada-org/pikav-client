@@ -1,0 +1,92 @@
+.app {
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+
+.app__container {
+  background-color: #ffffff;
+  width: 32rem;
+  max-width: calc(100vw - 3rem);
+  height: calc(100vh - 4rem);
+  margin: -2rem 0 0;
+  padding: 1rem 2rem;
+  position: relative;
+}
+
+@media (min-width: 767px) {
+  .app__container {
+    max-width: calc(100vw - 10rem);
+    height: calc(100vh - 10rem);
+    margin: -3rem 0 0;
+  }
+}
+
+.app__todos {
+  list-style: none;
+  padding-left: 0;
+}
+
+.todo {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.todo__input {
+  flex-grow: 1;
+}
+
+.todo__input > input {
+  width: calc(100% - 2.5rem);
+  border: none;
+  font-size: 1.25rem;
+  color: #212121;
+}
+
+.todo_done .todo__input > input {
+  color: #46bd8a;
+}
+
+.todo_disabled .todo__input > input {
+  color: hsla(0, 0%, 50%);
+}
+
+.todo__input > input:focus-visible {
+  outline: none;
+}
+
+.app__add-btn {
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  height: 4rem;
+  width: 4rem;
+  position: absolute;
+  bottom: -2rem;
+  left: calc(50% - 2rem);
+  background-color: #50e3a4;
+  color: #46bd8a;
+  font-size: 2.5rem;
+}
+
+.todo__done-btn {
+  cursor: pointer;
+  height: 1.5rem;
+  width: 1.5rem;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 3px solid hsla(0, 0%, 50%);
+}
+
+.todo_done .todo__done-btn {
+    background-color: #ffffff;
+    border: 3px solid #46bd8a;
+  }
+
+.todo__done-btn:disabled {
+  cursor: default;
+  background-color: #ffffff;
+  border: none;
+}
