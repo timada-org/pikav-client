@@ -9,14 +9,41 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/pikav": {
+      "/pikav-eu-west-1a": {
         target: "http://127.0.0.1:4455",
         changeOrigin: true,
       },
-      "/api": {
-        target: "http://127.0.0.1:4455/todo",
+      "/pikav-eu-west-1b": {
+        target: "http://127.0.0.1:4455",
         changeOrigin: true,
-        rewrite: (path) => path.substring(4),
+      },
+      "/pikav-eu-west-1c": {
+        target: "http://127.0.0.1:4455",
+        changeOrigin: true,
+      },
+      "/pikav-us-west-1a": {
+        target: "http://127.0.0.1:4455",
+        changeOrigin: true,
+      },
+      "/api-eu-west-1a": {
+        target: "http://127.0.0.1:4455/todo-eu-west-1a",
+        changeOrigin: true,
+        rewrite: (path) => path.substring(15),
+      },
+      "/api-eu-west-1b": {
+        target: "http://127.0.0.1:4455/todo-eu-west-1b",
+        changeOrigin: true,
+        rewrite: (path) => path.substring(15),
+      },
+      "/api-eu-west-1c": {
+        target: "http://127.0.0.1:4455/todo-eu-west-1c",
+        changeOrigin: true,
+        rewrite: (path) => path.substring(15),
+      },
+      "/api-us-west-1a": {
+        target: "http://127.0.0.1:4455/todo-us-west-1a",
+        changeOrigin: true,
+        rewrite: (path) => path.substring(15),
       },
       "/kratos": {
         target: "http://127.0.0.1:4433",

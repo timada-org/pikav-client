@@ -14,8 +14,10 @@ interface TodoItem {
   disabled: boolean;
 }
 
+const ZONE = location.pathname.replace("/", "") || "eu-west-1a";
+
 const fetchTodos = async () => {
-  const resp = await fetch(`/api/todos`);
+  const resp = await fetch(`/api-${ZONE}/todos`);
   const data: Todo[] = await resp.json();
 
   return data.map((todo) => ({ data: todo, disabled: false }));
@@ -67,7 +69,7 @@ const App: Component = () => {
 
     if (todo.text === "") {
       if (todo.id > -1) {
-        fetch(`/api/todos/${todo.id}`, {
+        fetch(`/api-${ZONE}/todos/${todo.id}`, {
           method: "DELETE",
         });
       }
@@ -83,7 +85,7 @@ const App: Component = () => {
     }
 
     if (todo.id > -1) {
-      fetch(`/api/todos/${todo.id}`, {
+      fetch(`/api-${ZONE}/todos/${todo.id}`, {
         method: "PUT",
         body: JSON.stringify({ text: todo.text, done: todo.done }),
       });
@@ -91,7 +93,7 @@ const App: Component = () => {
       return;
     }
 
-    fetch("/api/todos", {
+    fetch(`/api-${ZONE}/todos`, {
       method: "POST",
       body: JSON.stringify({ text: todo.text }),
       headers: new Headers({ "Content-Type": "application/json" }),
