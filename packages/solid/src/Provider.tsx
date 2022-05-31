@@ -7,8 +7,9 @@ export interface ProviderProps {
 }
 
 const Provider: Component<ProviderProps> = (props) => {
-  const clients =
-    typeof props.client === "object" ? [props.client as Client] : (props.client as Client[]);
+  const clients = !Array.isArray(props.client)
+    ? [props.client as Client]
+    : (props.client as Client[]);
 
   return <Context.Provider value={clients}>{props.children}</Context.Provider>;
 };
