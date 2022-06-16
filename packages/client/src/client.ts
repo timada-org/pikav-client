@@ -20,7 +20,7 @@ export interface ClientOptions {
 
 export default class Client {
   options: ClientOptions;
-  sessionId: string;
+  clientId?: string;
   listeners: Map<string, [TopicFilter, ListenerFunc]>;
   es: EventSource;
 
@@ -29,20 +29,24 @@ export default class Client {
       api: options.url,
       ...options,
     };
-    this.sessionId = "";
-    this.listeners = new Map();
 
+    this.listeners = new Map();
     this.es = new EventSource(this.options.url);
 
     this.es.onopen = () => {
+      delete this.clientId;
       this.subscribeListeners();
     };
 
     this.es.onmessage = (e) => {
+      if (e.data === "ping") {
+        return;
+      }
+
       const event: Event<string> = JSON.parse(e.data);
 
       if (event.topic === "$SYS/session" && event.name === "Created") {
-        this.sessionId = event.data;
+        this.clientId = event.data;
       }
 
       this.listeners.forEach(([filter, fn]) => {
@@ -53,16 +57,16 @@ export default class Client {
     };
   }
 
-  async getSessionId(): Promise<string> {
+  async getClientId(): Promise<string> {
     return new Promise((resolve) => {
       const fn = () => {
-        if (!this.sessionId) {
+        if (!this.clientId) {
           requestAnimationFrame(fn);
 
           return;
         }
 
-        resolve(this.sessionId);
+        resolve(this.clientId);
       };
 
       fn();
@@ -76,7 +80,7 @@ export default class Client {
     status: number;
     data: unknown;
   }> {
-    const sessionId = await this.getSessionId();
+    const clientId = await this.getClientId();
     const headers = await this.headers();
 
     let options: RequestInit = {
@@ -84,7 +88,7 @@ export default class Client {
       headers: new Headers({
         Accept: "application/json",
         "Content-Type": "application/json",
-        "X-Pikav-Session-ID": sessionId,
+        "X-Pikav-Client-ID": clientId,
         ...headers,
       }),
     };
@@ -108,7 +112,7 @@ export default class Client {
   }
 
   async subscribe(filter: string, fn: ListenerFunc): Promise<() => Promise<void>> {
-    await this.fetch("PUT", `sub/${filter}`);
+    await this.fetch("PUT", `subscribe/${filter}`);
 
     try {
       this.listeners.set(filter, [new TopicFilter(filter), fn]);
@@ -119,14 +123,14 @@ export default class Client {
     return async (): Promise<void> => {
       this.listeners.delete(filter);
 
-      await this.fetch("PUT", `unsub/${filter}`);
+      await this.fetch("PUT", `unsubscribe/${filter}`);
     };
   }
 
   async subscribeListeners(): Promise<void> {
     if (this.listeners.size > 0) {
       await Promise.all(
-        Array.from(this.listeners).map(([filter]) => this.fetch("PUT", `sub/${filter}`)),
+        Array.from(this.listeners).map(([filter]) => this.fetch("PUT", `subscribe/${filter}`)),
       );
     }
   }
