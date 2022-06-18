@@ -14,6 +14,7 @@ export interface Event<D = unknown, M = unknown> {
 export interface ClientOptions {
   url: string;
   api?: string;
+  namespace?: string;
   request?: RequestInit;
   headers?: ClientHeader | (() => ClientHeader) | (() => Promise<ClientHeader>);
 }
@@ -55,6 +56,10 @@ export default class Client {
         }
       });
     };
+  }
+
+  get namespace(): string {
+    return this.options.namespace || "_";
   }
 
   async getClientId(): Promise<string> {
@@ -112,7 +117,7 @@ export default class Client {
   }
 
   async subscribe(filter: string, fn: ListenerFunc): Promise<() => Promise<void>> {
-    await this.fetch("PUT", `subscribe/${filter}`);
+    await this.fetch("PUT", `subscribe/${this.namespace}/${filter}`);
 
     try {
       this.listeners.set(filter, [new TopicFilter(filter), fn]);
@@ -123,7 +128,7 @@ export default class Client {
     return async (): Promise<void> => {
       this.listeners.delete(filter);
 
-      await this.fetch("PUT", `unsubscribe/${filter}`);
+      await this.fetch("PUT", `unsubscribe/${this.namespace}/${filter}`);
     };
   }
 
