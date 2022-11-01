@@ -1,5 +1,5 @@
 import { Configuration, V0alpha2Api } from "@ory/kratos-client";
-import { Component, createEffect, createResource, Show } from "solid-js";
+import { createEffect, createResource, ParentComponent, Show } from "solid-js";
 
 const kratos = new V0alpha2Api(new Configuration({ basePath: "/kratos" }));
 
@@ -7,8 +7,8 @@ const removeTrailingSlash = (s: string) => s.replace(/\/$/, "");
 const getUrlForFlow = (base: string, flow: string, query?: URLSearchParams) =>
   `${removeTrailingSlash(base)}/self-service/${flow}/browser${query ? `?${query.toString()}` : ""}`;
 
-const CheckAuth: Component = (props) => {
-  const [session] = createResource(() => kratos.toSession(), { initialValue: null });
+const CheckAuth: ParentComponent = (props) => {
+  const [session] = createResource(() => kratos.toSession());
   createEffect(() => {
     if (!session.error || session.error.response.status !== 401) {
       return;

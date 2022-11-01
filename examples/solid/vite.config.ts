@@ -5,9 +5,10 @@ export default defineConfig({
   plugins: [solidPlugin()],
   build: {
     target: "esnext",
-    polyfillDynamicImport: false,
   },
   server: {
+    host: "127.0.0.1",
+    port: 3000,
     proxy: {
       "/pikav-eu-west-1a": {
         target: "http://127.0.0.1:4455",
