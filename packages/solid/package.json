@@ -7,10 +7,12 @@
   },
   "license": "Apache-2.0",
   "devDependencies": {
+    "@rollup/plugin-babel": "^6.0.2",
+    "@rollup/plugin-node-resolve": "^15.0.1",
     "pikav": "file:../pikav",
     "rollup": "^2.70.1",
     "rollup-preset-solid": "^1.4.0",
-    "solid-js": "^1.3.14",
-    "typescript": "^4.6.3"
+    "solid-js": "^1.6.1",
+    "typescript": "^4.8.4"
   }
 }

@@ -11,13 +11,13 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^4.6.3",
-    "vite": "^2.8.6",
-    "vite-plugin-solid": "^2.2.6"
+    "typescript": "^4.8.4",
+    "vite": "^3.2.2",
+    "vite-plugin-solid": "^2.3.10"
   },
   "dependencies": {
     "@ory/kratos-client": "^0.9.0-alpha.3",
     "pikav": "file:../pikav",
-    "solid-js": "^1.3.14"
+    "solid-js": "^1.6.1"
   }
 }
