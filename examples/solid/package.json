@@ -16,7 +16,6 @@
     "vite-plugin-solid": "^2.3.10"
   },
   "dependencies": {
-    "@ory/kratos-client": "^0.9.0-alpha.3",
     "pikav": "file:../pikav",
     "solid-js": "^1.6.1"
   }

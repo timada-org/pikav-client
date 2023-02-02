@@ -1,6 +1,6 @@
 import TopicFilter from "./topic";
 
-type ClientHeader = { [key: string]: unknown };
+export type ClientHeader = { [key: string]: unknown };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ListenerFunc = (event: any) => void;
 
@@ -117,18 +117,20 @@ export default class Client {
   }
 
   async subscribe(filter: string, fn: ListenerFunc): Promise<() => Promise<void>> {
-    await this.fetch("PUT", `subscribe/${this.namespace}/${filter}`);
+    const nsFilter = `${this.namespace}/${filter}`;
+
+    await this.fetch("PUT", `subscribe/${nsFilter}`);
 
     try {
-      this.listeners.set(filter, [new TopicFilter(filter), fn]);
+      this.listeners.set(nsFilter, [new TopicFilter(nsFilter), fn]);
     } catch (error) {
       console.error(error);
     }
 
     return async (): Promise<void> => {
-      this.listeners.delete(filter);
+      this.listeners.delete(nsFilter);
 
-      await this.fetch("PUT", `unsubscribe/${this.namespace}/${filter}`);
+      await this.fetch("PUT", `unsubscribe/${nsFilter}`);
     };
   }
 

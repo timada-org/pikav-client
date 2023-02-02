@@ -1,5 +1,5 @@
 import { Component, createResource, For, JSX } from "solid-js";
-import { useSubscribe } from "pikav/solid";
+import { useSubscribe, useClient } from "pikav/solid";
 
 import "./App.css";
 
@@ -19,14 +19,24 @@ const ZONES: { [key: string]: string } = {
   "eu-west-1a-eu-west-1b": "eu-west-1b",
 };
 const ZONE = ZONES[DEFAULT_ZONE] || DEFAULT_ZONE;
-const fetchTodos = async () => {
-  const resp = await fetch(`/api-${ZONE}/todos`);
-  const data: Todo[] = await resp.json();
-
-  return data.map((todo) => ({ data: todo, disabled: false }));
-};
 
 const App: Component = () => {
+  const client = useClient();
+  const fetchTodos = async () => {
+    const headers = (await client.headers()) as {
+      [key: string]: string;
+    };
+    const resp = await fetch(`/api-${ZONE}/todos`, {
+      headers: new Headers({
+        "Content-Type": "application/json",
+        ...headers,
+      }),
+    });
+    const data: Todo[] = await resp.json();
+
+    return data.map((todo) => ({ data: todo, disabled: false }));
+  };
+
   const [todos, { mutate }] = createResource<TodoItem[]>(fetchTodos, { initialValue: [] });
 
   useSubscribe<Todo>("todos/+", (event) => {
@@ -61,7 +71,11 @@ const App: Component = () => {
     }
   });
 
-  const onTodoChange = (todo: Todo, i: number) => {
+  const onTodoChange = async (todo: Todo, i: number) => {
+    const headers = (await client.headers()) as {
+      [key: string]: string;
+    };
+
     mutate((todos) => {
       return [
         ...todos.slice(0, i),
@@ -74,7 +88,10 @@ const App: Component = () => {
       if (todo.id > -1) {
         fetch(`/api-${ZONE}/todos/${todo.id}`, {
           method: "DELETE",
-          headers: new Headers({ "Content-Type": "application/json" }),
+          headers: new Headers({
+            "Content-Type": "application/json",
+            ...headers,
+          }),
         });
       }
 
@@ -92,7 +109,10 @@ const App: Component = () => {
       fetch(`/api-${ZONE}/todos/${todo.id}`, {
         method: "PUT",
         body: JSON.stringify({ text: todo.text, done: todo.done }),
-        headers: new Headers({ "Content-Type": "application/json" }),
+        headers: new Headers({
+          "Content-Type": "application/json",
+          ...headers,
+        }),
       });
 
       return;
@@ -101,7 +121,10 @@ const App: Component = () => {
     fetch(`/api-${ZONE}/todos`, {
       method: "POST",
       body: JSON.stringify({ text: todo.text }),
-      headers: new Headers({ "Content-Type": "application/json" }),
+      headers: new Headers({
+        "Content-Type": "application/json",
+        ...headers,
+      }),
     });
   };
 
