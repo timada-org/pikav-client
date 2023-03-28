@@ -1,7 +1,7 @@
 /* @refresh reload */
 import { render } from "solid-js/web";
 import { Client, ClientOptions, ClientHeader } from "pikav";
-import { Provider } from "pikav/solid";
+import { Pikav } from "pikav/solid";
 
 import "./index.css";
 import App from "./App";
@@ -82,9 +82,9 @@ const client = new Client({
 
 render(
   () => (
-    <Provider client={client}>
+    <Pikav client={client}>
       <App />
-    </Provider>
+    </Pikav>
   ),
   document.getElementById("root") as HTMLElement,
 );
