@@ -2,17 +2,18 @@
   "name": "solid",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "build": "rollup -c && rm -rf ../pikav/dist/solid && mkdir -p ../pikav/dist && mv dist ../pikav/dist/solid"
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "@rollup/plugin-babel": "^6.0.2",
-    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-node-resolve": "^15.0.2",
     "pikav": "file:../pikav",
-    "rollup": "^2.70.1",
-    "rollup-preset-solid": "^1.4.0",
-    "solid-js": "^1.6.1",
-    "typescript": "^4.8.4"
+    "rollup": "^3.23.0",
+    "rollup-preset-solid": "^2.0.1",
+    "solid-js": "^1.7.5",
+    "typescript": "^5.0.4"
   }
 }

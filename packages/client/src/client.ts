@@ -1,5 +1,3 @@
-import TopicFilter from "./topic";
-
 export type ClientHeader = { [key: string]: unknown };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ListenerFunc = (event: any) => void;
@@ -9,6 +7,7 @@ export interface Event<D = unknown, M = unknown> {
   name: string;
   data: D;
   metadata?: M;
+  filters?: string[];
 }
 
 export interface ClientOptions {
@@ -22,8 +21,9 @@ export interface ClientOptions {
 export default class Client {
   options: ClientOptions;
   clientId?: string;
-  listeners: Map<string, [TopicFilter, ListenerFunc]>;
+  listeners: Map<number, [string, ListenerFunc]>;
   es: EventSource;
+  next_listener_id: number;
 
   constructor(options: ClientOptions) {
     this.options = {
@@ -32,12 +32,8 @@ export default class Client {
     };
 
     this.listeners = new Map();
+    this.next_listener_id = 0;
     this.es = new EventSource(this.options.url);
-
-    this.es.onopen = () => {
-      delete this.clientId;
-      this.subscribeListeners();
-    };
 
     this.es.onmessage = (e) => {
       if (e.data === "ping") {
@@ -47,11 +43,14 @@ export default class Client {
       const event: Event<string> = JSON.parse(e.data);
 
       if (event.topic === "$SYS/session" && event.name === "Created") {
+        if (this.clientId) {
+          this.subscribeListeners();
+        }
         this.clientId = event.data;
       }
 
       this.listeners.forEach(([filter, fn]) => {
-        if (filter.match(event.topic)) {
+        if (event.filters?.includes(filter)) {
           fn(event);
         }
       });
@@ -118,27 +117,30 @@ export default class Client {
 
   async subscribe(filter: string, fn: ListenerFunc): Promise<() => Promise<void>> {
     const nsFilter = `${this.namespace}/${filter}`;
+    const id = this.next_listener_id++;
+    const subscribed = [...this.listeners.values()].some(([filter]) => filter === nsFilter);
 
-    await this.fetch("PUT", `subscribe/${nsFilter}`);
+    this.listeners.set(id, [nsFilter, fn]);
 
-    try {
-      this.listeners.set(nsFilter, [new TopicFilter(nsFilter), fn]);
-    } catch (error) {
-      console.error(error);
+    if (!subscribed) {
+      await this.fetch("PUT", `subscribe/${nsFilter}`);
     }
 
     return async (): Promise<void> => {
-      this.listeners.delete(nsFilter);
+      this.listeners.delete(id);
 
-      await this.fetch("PUT", `unsubscribe/${nsFilter}`);
+      const filters = [...this.listeners.values()].filter(([filter]) => filter === nsFilter);
+
+      if (filters.length === 0) {
+        await this.fetch("PUT", `unsubscribe/${nsFilter}`);
+      }
     };
   }
 
   async subscribeListeners(): Promise<void> {
     if (this.listeners.size > 0) {
-      await Promise.all(
-        Array.from(this.listeners).map(([filter]) => this.fetch("PUT", `subscribe/${filter}`)),
-      );
+      const filters = [...new Set(Array.from(this.listeners).map(([, [f]]) => f))];
+      await Promise.all(filters.map((filter) => this.fetch("PUT", `subscribe/${filter}`)));
     }
   }
 
