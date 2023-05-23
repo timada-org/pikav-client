@@ -7,7 +7,7 @@ on:
 
 jobs:
   node:
-    uses: timada-org/.github/.github/workflows/node-release.yml@v2.0.3
+    uses: timada-org/.github/.github/workflows/node-release.yml@v2.15.1
     secrets:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

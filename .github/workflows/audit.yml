@@ -10,4 +10,4 @@ on:
 
 jobs:
   node:
-    uses: timada-org/.github/.github/workflows/node-audit.yml@v2.0.3
+    uses: timada-org/.github/.github/workflows/node-audit.yml@v2.15.1
