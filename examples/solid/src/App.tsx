@@ -39,7 +39,7 @@ const App: Component = () => {
 
   const [todos, { mutate }] = createResource<TodoItem[]>(fetchTodos, { initialValue: [] });
 
-  useSubscribe<Todo>("todos/+", (event) => {
+  useSubscribe<Todo>("todos/*", (event) => {
     switch (event.name) {
       case "Created":
         mutate((todos) => {
@@ -69,6 +69,10 @@ const App: Component = () => {
       default:
         break;
     }
+  });
+
+  useSubscribe<Todo>("todos/*", (event) => {
+    console.log(event);
   });
 
   const onTodoChange = async (todo: Todo, i: number) => {
